@@ -47,7 +47,7 @@ ShopKart/
 
 ⚙️ Installation & Setup
 1. Clone Repository
-git clone https://github.com/your-username/shopkart.git
+git clone https://github.com/your-manasyadav23/shopkart.git
 cd shopkart
 
 2. Create Virtual Environment
