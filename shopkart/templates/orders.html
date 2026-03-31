@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - ShopKart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="fas fa-history me-2 text-primary"></i>My Order History</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">Orders</li>
+            </ol>
+        </nav>
+    </div>
+
+    {% if not all_orders %}
+    <div class="text-center py-5 bg-light rounded-4 border">
+        <div class="mb-4">
+            <i class="fas fa-shopping-bag fa-4x text-muted opacity-25"></i>
+        </div>
+        <h3 class="fw-bold">No orders yet</h3>
+        <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your history here!</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary px-4 py-2 rounded-pill">
+            <i class="fas fa-shopping-cart me-2"></i>Start Shopping
+        </a>
+    </div>
+    {% else %}
+    <div class="orders-container">
+        {% for order in all_orders %}
+        <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-3 px-4">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <p class="text-muted small mb-0 text-uppercase fw-bold">Order Placed</p>
+                        <p class="mb-0 fw-semibold">{{ order.info.created_at }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-muted small mb-0 text-uppercase fw-bold">Total</p>
+                        <p class="mb-0 fw-bold text-primary">₹{{ "%.2f"|format(order.info.total_amount) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-muted small mb-0 text-uppercase fw-bold">Status</p>
+                        <span class="badge rounded-pill {% if order.info.status == 'Pending' %}bg-warning-subtle text-warning{% elif order.info.status == 'Delivered' %}bg-success-subtle text-success{% else %}bg-primary-subtle text-primary{% endif %} px-3">
+                            {{ order.info.status }}
+                        </span>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-muted small mb-0 text-uppercase fw-bold">Payment</p>
+                        <p class="mb-0 small fw-semibold text-dark">{{ order.info.payment_method }}</p>
+                    </div>
+                    <div class="col-md-2 text-md-end">
+                        <p class="text-muted small mb-0 text-uppercase fw-bold">Order ID</p>
+                        <p class="mb-0 font-monospace">#SK-{{ order.info.id }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for item in order.order_items %}
+                    <div class="list-group-item py-4 px-4 border-bottom-0">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="img-wrapper rounded-3 border bg-light" style="width: 100px; height: 100px; overflow: hidden;">
+                                    <img src="{{ url_for('static', filename='uploads/' + item.image) }}" alt="{{ item.name }}" class="w-100 h-100 object-fit-contain" onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h5 class="mb-1 fw-bold text-dark">{{ item.name }}</h5>
+                                <p class="text-muted small mb-2">{{ item.brand }}</p>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="text-muted small">Qty: <strong>{{ item.quantity }}</strong></span>
+                                    <span class="text-primary fw-bold">₹{{ "%.2f"|format(item.price) }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-md-end mt-3 mt-md-0">
+                                <a href="{{ url_for('product_detail', pid=item.product_id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                    View Product
+                                </a>
+                                <button class="btn btn-primary btn-sm rounded-pill px-3 ms-1">
+                                    Buy Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer bg-light border-top py-3 px-4 d-flex justify-content-between align-items-center">
+                <div class="order-actions">
+                    <button class="btn btn-link btn-sm text-decoration-none p-0 me-3 text-muted">
+                        <i class="fas fa-file-invoice me-1"></i>Invoice
+                    </button>
+                    <button class="btn btn-link btn-sm text-decoration-none p-0 text-muted">
+                        <i class="fas fa-headset me-1"></i>Support
+                    </button>
+                </div>
+                <div class="tracking">
+                    <span class="text-muted small me-2">Delivery expected by March 30</span>
+                    <i class="fas fa-truck-fast text-primary"></i>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.object-fit-contain {
+    object-fit: contain;
+}
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+.bg-warning-subtle { background-color: #fff3cd !important; }
+.bg-success-subtle { background-color: #d1e7dd !important; }
+.bg-primary-subtle { background-color: #cfe2ff !important; }
+</style>
+{% endblock %}

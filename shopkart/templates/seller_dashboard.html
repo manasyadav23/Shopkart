@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Seller Dashboard - ShopKart{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="dashboard-header">
+        <div>
+            <h2 class="dashboard-title">Seller Dashboard</h2>
+            <p class="dashboard-sub">Welcome back, {{ session.user_name }}!</p>
+        </div>
+        <a href="{{ url_for('add_product') }}" class="btn btn-add-product-dash">
+            <i class="fas fa-plus me-2"></i>Add New Product
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="dash-stat-card stat-blue">
+                <div class="dash-stat-icon"><i class="fas fa-box"></i></div>
+                <div class="dash-stat-num">{{ stats.count or 0 }}</div>
+                <div class="dash-stat-label">Total Products</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="dash-stat-card stat-green">
+                <div class="dash-stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                <div class="dash-stat-num">₹{{ "{:,.0f}".format(stats.revenue or 0) }}</div>
+                <div class="dash-stat-label">Listed Value</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="dash-stat-card stat-orange">
+                <div class="dash-stat-icon"><i class="fas fa-star"></i></div>
+                <div class="dash-stat-num">4.8</div>
+                <div class="dash-stat-label">Avg Rating</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="dash-stat-card stat-purple">
+                <div class="dash-stat-icon"><i class="fas fa-users"></i></div>
+                <div class="dash-stat-num">{{ user_count or 0 }}</div>
+                <div class="dash-stat-label">Registered Users</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="dash-table-card">
+        <div class="dash-table-header">
+            <h5>My Products</h5>
+        </div>
+        {% if products %}
+        <div class="table-responsive">
+            <table class="table sk-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Stock</th>
+                        <th>Rating</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="table-product-thumb">
+                                {% if p.image and p.image != 'default.jpg' %}
+                                <img src="{{ url_for('static', filename='uploads/' + p.image) }}" alt="{{ p.name }}">
+                                {% else %}
+                                <span>📦</span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <div class="table-product-name">{{ p.name[:35] }}{% if p.name|length > 35 %}...{% endif %}</div>
+                                <div class="table-product-brand">{{ p.brand }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="cat-pill">{{ p.category }}</span></td>
+                    <td class="fw-600">₹{{ "{:,}".format(p.price|int) }}</td>
+                    <td>
+                        {% if p.discount > 0 %}
+                        <span class="badge-discount">{{ p.discount }}% OFF</span>
+                        {% else %}-{% endif %}
+                    </td>
+                    <td>
+                        <span class="{% if p.stock < 10 %}text-danger{% elif p.stock < 50 %}text-warning{% else %}text-success{% endif %} fw-500">
+                            {{ p.stock }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="rating-badge-sm">{{ p.rating }} ★</span>
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <a href="{{ url_for('product_detail', pid=p.id) }}" class="btn-table-action view" title="View"><i class="fas fa-eye"></i></a>
+                            <a href="{{ url_for('edit_product', pid=p.id) }}" class="btn-table-action edit" title="Edit"><i class="fas fa-edit"></i></a>
+                            <form action="{{ url_for('delete_product', pid=p.id) }}" method="post" class="d-inline"
+                                  onsubmit="return confirm('Delete this product?')">
+                                <button type="submit" class="btn-table-action delete" title="Delete"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state py-5">
+            <div class="empty-icon">📦</div>
+            <h5>No products yet</h5>
+            <p>Start by adding your first product</p>
+            <a href="{{ url_for('add_product') }}" class="btn btn-primary-sk">Add Product</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

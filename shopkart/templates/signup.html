@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up - ShopKart{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-left">
+            <div class="auth-left-content">
+                <div class="auth-logo">🛒 ShopKart</div>
+                <h2>Join ShopKart!</h2>
+                <p>Create an account to start shopping or selling millions of products.</p>
+                <div class="auth-features">
+                    <div class="auth-feature"><i class="fas fa-shopping-bag"></i> Shop from 2M+ products</div>
+                    <div class="auth-feature"><i class="fas fa-store"></i> Sell your products</div>
+                    <div class="auth-feature"><i class="fas fa-shield-alt"></i> Secure & trusted</div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-right">
+            <div class="auth-form-wrap">
+                <h3 class="auth-form-title">Create Account</h3>
+                <p class="auth-form-sub">Join millions of happy shoppers</p>
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label-sk">Full Name</label>
+                        <div class="input-icon-wrap">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" name="name" class="form-control sk-input with-icon" placeholder="Your full name" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-sk">Email Address</label>
+                        <div class="input-icon-wrap">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" name="email" class="form-control sk-input with-icon" placeholder="you@example.com" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-sk">Password</label>
+                        <div class="input-icon-wrap">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" name="password" class="form-control sk-input with-icon" placeholder="Min. 6 characters" required minlength="6">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label-sk">Account Type</label>
+                        <div class="account-type-selector">
+                            <label class="account-type-option">
+                                <input type="radio" name="role" value="user" checked>
+                                <div class="account-type-card">
+                                    <div class="type-icon">🛍️</div>
+                                    <div class="type-name">Buyer</div>
+                                    <div class="type-desc">Shop products</div>
+                                </div>
+                            </label>
+                            <label class="account-type-option">
+                                <input type="radio" name="role" value="seller">
+                                <div class="account-type-card">
+                                    <div class="type-icon">🏪</div>
+                                    <div class="type-name">Seller</div>
+                                    <div class="type-desc">List & sell products</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-auth w-100">Create Account <i class="fas fa-arrow-right ms-2"></i></button>
+                </form>
+                <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% set discounted = (p.price * (1 - p.discount/100))|round(0)|int %}
+<div class="product-card" data-id="{{ p.id }}">
+    <!-- Wishlist Button -->
+    <button class="wishlist-btn {% if p.id in wishlist_ids %}active{% endif %}"
+        onclick="toggleWishlist({{ p.id }}, this)" title="Add to Wishlist">
+        <i class="{% if p.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+    </button>
+
+    <!-- Product Image -->
+    <a href="{{ url_for('product_detail', pid=p.id) }}" class="product-img-link">
+        <div class="product-img-wrapper">
+            {% if p.image and p.image != 'default.jpg' %}
+            <img src="{{ url_for('static', filename='uploads/' + p.image) }}" alt="{{ p.name }}" class="product-img"
+                loading="lazy">
+            {% else %}
+            <div class="product-img-placeholder">
+                {% if p.category == 'Electronics' %}📱
+                {% elif p.category == 'Clothing' %}👗
+                {% elif p.category == 'Footwear' %}👟
+                {% elif p.category == 'Kitchen' %}🍳
+                {% elif p.category == 'Books' %}📚
+                {% elif p.category == 'Appliances' %}🏠
+                {% else %}📦{% endif %}
+            </div>
+            {% endif %}
+            {% if p.discount > 0 %}
+            <span class="discount-badge">{{ p.discount }}% OFF</span>
+            {% endif %}
+        </div>
+    </a>
+
+    <!-- Product Info -->
+    <div class="product-info">
+        <div class="product-brand">{{ p.brand }}</div>
+        <a href="{{ url_for('product_detail', pid=p.id) }}" class="product-name-link">
+            <h6 class="product-name">{{ p.name }}</h6>
+        </a>
+
+        <!-- Rating -->
+        <div class="product-rating">
+            <span class="rating-badge">
+                {{ p.rating }} <i class="fas fa-star"></i>
+            </span>
+            <span class="rating-count">({{ p.rating_count }})</span>
+        </div>
+
+        <!-- Price -->
+        <div class="product-price">
+            <span class="price-current">₹{{ "{:,}".format(discounted) }}</span>
+            {% if p.discount > 0 %}
+            <span class="price-original">₹{{ "{:,}".format(p.price|int) }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Add to Cart -->
+        <button class="btn-add-cart" onclick="addToCart({{ p.id }}, this)">
+            <i class="fas fa-shopping-cart me-1"></i> Add to Cart
+        </button>
+    </div>
+</div>

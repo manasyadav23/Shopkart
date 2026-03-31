@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Login - ShopKart{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-left">
+            <div class="auth-left-content">
+                <div class="auth-logo">🛒 ShopKart</div>
+                <h2>Welcome Back!</h2>
+                <p>Login to access millions of products, track orders, and manage your wishlist.</p>
+                <div class="auth-features">
+                    <div class="auth-feature"><i class="fas fa-truck"></i> Track your orders</div>
+                    <div class="auth-feature"><i class="fas fa-heart"></i> Access your wishlist</div>
+                    <div class="auth-feature"><i class="fas fa-tag"></i> Exclusive deals</div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-right">
+            <div class="auth-form-wrap">
+                <h3 class="auth-form-title">Login</h3>
+                <p class="auth-form-sub">Enter your credentials to continue</p>
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label-sk">Email Address</label>
+                        <div class="input-icon-wrap">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" name="email" class="form-control sk-input with-icon" placeholder="you@example.com" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label-sk">Password</label>
+                        <div class="input-icon-wrap">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" name="password" class="form-control sk-input with-icon" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-auth w-100">Login <i class="fas fa-arrow-right ms-2"></i></button>
+                </form>
+
+                <div class="auth-divider">or continue with</div>
+
+                <div class="demo-accounts">
+                    <div class="demo-title">Demo Accounts</div>
+                    <div class="demo-account" onclick="fillDemo('user@shopkart.com','user123')">
+                        <i class="fas fa-user me-2"></i> Demo User
+                    </div>
+                    <div class="demo-account" onclick="fillDemo('admin@shopkart.com','admin123')">
+                        <i class="fas fa-store me-2"></i> Demo Seller
+                    </div>
+                </div>
+
+                <p class="auth-switch">Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function fillDemo(email, pass) {
+    document.querySelector('input[name=email]').value = email;
+    document.querySelector('input[name=password]').value = pass;
+}
+</script>
+{% endblock %}

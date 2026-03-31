@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile - ShopKart{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-primary py-4 text-center text-white rounded-top-4">
+                    <h4 class="mb-0 fw-bold">Edit Your Profile</h4>
+                    <p class="small mb-0 opacity-75">Update your personal information</p>
+                </div>
+                <div class="card-body p-4">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mb-4 rounded-3" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form action="{{ url_for('edit_profile') }}" method="POST">
+                        <div class="mb-4">
+                            <label for="name" class="form-label fw-bold text-muted small text-uppercase">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="fas fa-user text-primary"></i></span>
+                                <input type="text" class="form-control bg-light border-0 py-2" id="name" name="name" value="{{ user.name }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-bold text-muted small text-uppercase">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="fas fa-envelope text-primary"></i></span>
+                                <input type="email" class="form-control bg-light border-0 py-2" id="email" name="email" value="{{ user.email }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase">Account Type</label>
+                            <div class="p-2 px-3 bg-light rounded-3 text-dark fw-semibold">
+                                <i class="fas fa-shield-alt me-2 text-primary"></i>{{ user.role|capitalize }}
+                            </div>
+                            <div class="form-text text-muted mt-2">Account type cannot be changed manually. Contact support if needed.</div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-primary rounded-pill py-2 fw-bold">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                            <a href="{{ url_for('profile') }}" class="btn btn-light rounded-pill py-2 text-muted fw-semibold">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rounded-4 { border-radius: 1rem !important; }
+.rounded-top-4 { border-top-left-radius: 1rem !important; border-top-right-radius: 1rem !important; }
+.form-control:focus {
+    box-shadow: none;
+    background-color: #f0f2f5 !important;
+}
+.input-group-text {
+    border-top-left-radius: 0.5rem !important;
+    border-bottom-left-radius: 0.5rem !important;
+}
+.form-control {
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+}
+</style>
+{% endblock %}

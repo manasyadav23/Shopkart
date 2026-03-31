@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}My Wishlist - ShopKart{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <h3 class="page-title mb-4"><i class="fas fa-heart me-2"></i>My Wishlist</h3>
+    {% if items %}
+    <div class="row g-3">
+        {% for p in items %}
+        <div class="col-6 col-md-3">
+            {% include '_product_card.html' %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state py-5">
+        <div class="empty-icon">💔</div>
+        <h4>Your wishlist is empty</h4>
+        <p>Save your favourite products by clicking the heart icon</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary-sk">Explore Products</a>
+    </div>
+    {% endif %}
+</div>
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="cartToast" class="toast sk-toast" role="alert">
+        <div class="toast-body">
+            <i class="fas fa-check-circle me-2 text-success"></i>
+            <span id="toastMsg">Added to cart!</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

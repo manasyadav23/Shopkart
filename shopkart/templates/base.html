@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopKart{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+<!-- Top Bar -->
+<div class="topbar">
+    <div class="container-fluid px-4 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <span class="topbar-text"><i class="fas fa-truck me-1"></i> Free delivery on orders above ₹499</span>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            {% if session.user_id %}
+                <span class="topbar-text">Hello, {{ session.user_name }}</span>
+                {% if session.role == 'seller' %}
+                <a href="{{ url_for('seller_dashboard') }}" class="topbar-link"><i class="fas fa-store me-1"></i>My Store</a>
+                {% endif %}
+                <a href="{{ url_for('orders') }}" class="topbar-link"><i class="fas fa-history me-1"></i>My Orders</a>
+                <a href="{{ url_for('profile') }}" class="topbar-link"><i class="fas fa-user-circle me-1"></i>My Profile</a>
+                <a href="{{ url_for('logout') }}" class="topbar-link">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="topbar-link">Login</a>
+                <a href="{{ url_for('signup') }}" class="topbar-link">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Main Navbar -->
+<nav class="navbar navbar-expand-lg main-navbar sticky-top">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+            <span class="brand-icon">🛒</span>
+            <span class="brand-name">Shop<span class="brand-accent">Kart</span></span>
+        </a>
+
+        <!-- Search Bar -->
+        <div class="search-container mx-auto">
+            <form action="{{ url_for('index') }}" method="get" class="search-form">
+                <div class="search-box">
+                    <input type="text" name="q" class="search-input" placeholder="Search products, brands..." value="{{ search|default('') }}">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Nav Icons -->
+        <div class="nav-icons d-flex align-items-center gap-3">
+            {% if session.role == 'seller' %}
+            <a href="{{ url_for('add_product') }}" class="nav-icon-btn" title="Add Product">
+                <i class="fas fa-plus-circle"></i>
+                <span class="nav-icon-label">Sell</span>
+            </a>
+            {% endif %}
+            <a href="{{ url_for('wishlist') }}" class="nav-icon-btn" title="Wishlist">
+                <i class="fas fa-heart"></i>
+                <span class="nav-icon-label">Wishlist</span>
+            </a>
+            <a href="{{ url_for('cart') }}" class="nav-icon-btn cart-icon" title="Cart">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge" id="cart-badge">{{ cart_count }}</span>
+                <span class="nav-icon-label">Cart</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Category Nav -->
+<div class="category-nav">
+    <div class="container-fluid px-4">
+        <div class="category-list">
+            <a href="{{ url_for('index') }}" class="cat-link {% if not category %}active{% endif %}">All</a>
+            <a href="{{ url_for('index', category='Electronics') }}" class="cat-link {% if category=='Electronics' %}active{% endif %}"><i class="fas fa-mobile-alt me-1"></i>Electronics</a>
+            <a href="{{ url_for('index', category='Clothing') }}" class="cat-link {% if category=='Clothing' %}active{% endif %}"><i class="fas fa-tshirt me-1"></i>Clothing</a>
+            <a href="{{ url_for('index', category='Footwear') }}" class="cat-link {% if category=='Footwear' %}active{% endif %}"><i class="fas fa-shoe-prints me-1"></i>Footwear</a>
+            <a href="{{ url_for('index', category='Kitchen') }}" class="cat-link {% if category=='Kitchen' %}active{% endif %}"><i class="fas fa-utensils me-1"></i>Kitchen</a>
+            <a href="{{ url_for('index', category='Books') }}" class="cat-link {% if category=='Books' %}active{% endif %}"><i class="fas fa-book me-1"></i>Books</a>
+            <a href="{{ url_for('index', category='Appliances') }}" class="cat-link {% if category=='Appliances' %}active{% endif %}"><i class="fas fa-blender me-1"></i>Appliances</a>
+        </div>
+    </div>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="container-fluid px-4 mt-2">
+    {% for cat, msg in messages %}
+    <div class="alert alert-{{ 'success' if cat=='success' else 'danger' }} alert-dismissible fade show sk-alert" role="alert">
+        <i class="fas fa-{{ 'check-circle' if cat=='success' else 'exclamation-circle' }} me-2"></i>{{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- Main Content -->
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="site-footer mt-5">
+    <div class="container-fluid px-4">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="footer-brand">🛒 Shop<span>Kart</span></div>
+                <p class="footer-tagline">India's favourite online shopping destination. Quality products, great prices.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <h6 class="footer-heading">Shop</h6>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('index', category='Electronics') }}">Electronics</a></li>
+                    <li><a href="{{ url_for('index', category='Clothing') }}">Fashion</a></li>
+                    <li><a href="{{ url_for('index', category='Kitchen') }}">Kitchen</a></li>
+                    <li><a href="{{ url_for('index', category='Books') }}">Books</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="footer-heading">Account</h6>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                    <li><a href="{{ url_for('cart') }}">My Cart</a></li>
+                    <li><a href="{{ url_for('wishlist') }}">Wishlist</a></li>
+                    <li><a href="{{ url_for('orders') }}">My Orders</a></li>
+                    <li><a href="{{ url_for('profile') }}">My Profile</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h6 class="footer-heading">Sell</h6>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('signup') }}">Start Selling</a></li>
+                    <li><a href="{{ url_for('seller_dashboard') }}">Seller Dashboard</a></li>
+                    <li><a href="{{ url_for('add_product') }}">Add Product</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h6 class="footer-heading">Why ShopKart?</h6>
+                <div class="trust-badges">
+                    <div class="trust-badge"><i class="fas fa-shield-alt"></i> 100% Secure Payments</div>
+                    <div class="trust-badge"><i class="fas fa-undo"></i> Easy Returns</div>
+                    <div class="trust-badge"><i class="fas fa-truck"></i> Fast Delivery</div>
+                    <div class="trust-badge"><i class="fas fa-headset"></i> 24/7 Support</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 ShopKart. All rights reserved. | Made with ❤️ in India</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - ShopKart{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-4">Shipping Information</h4>
+                    <form action="{{ url_for('checkout') }}" method="post" id="checkout-form">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" value="{{ session.user_name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" placeholder="10-digit mobile number" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Address (House No, Building, Street, Area)</label>
+                                <textarea class="form-control" rows="3" required></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">State</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Pincode</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        
+                        <h4 class="mb-4">Payment Method</h4>
+                        <div class="form-check border p-3 rounded-3 mb-2">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="payment" id="cod" value="Cash on Delivery" checked>
+                            <label class="form-check-label" for="cod">
+                                <b>Cash on Delivery</b><br>
+                                <small class="text-muted">Pay when you receive your order</small>
+                            </label>
+                        </div>
+                        <div class="form-check border p-3 rounded-3 mb-2">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="payment" id="upi" value="UPI">
+                            <label class="form-check-label" for="upi">
+                                <b>UPI</b><br>
+                                <small class="text-muted">Google Pay, PhonePe, Paytm</small>
+                            </label>
+                        </div>
+                        <div class="form-check border p-3 rounded-3 mb-2">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="payment" id="card" value="Credit/Debit Card">
+                            <label class="form-check-label" for="card">
+                                <b>Credit / Debit Card</b><br>
+                                <small class="text-muted">All major cards supported</small>
+                            </label>
+                        </div>
+                        <div class="form-check border p-3 rounded-3">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="payment" id="nb" value="Net Banking">
+                            <label class="form-check-label" for="nb">
+                                <b>Net Banking</b><br>
+                                <small class="text-muted">Pay using your bank account</small>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="order-summary-card sticky-top" style="top: 80px;">
+                <h5 class="order-summary-title">Order Summary</h5>
+                <div class="summary-rows">
+                    <div class="summary-row">
+                        <span>Items Total</span>
+                        <span>₹{{ "{:,}".format(total|int) }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery</span>
+                        <span class="text-success">FREE</span>
+                    </div>
+                </div>
+                <div class="summary-total">
+                    <span>Amount Payable</span>
+                    <span>₹{{ "{:,}".format(total|int) }}</span>
+                </div>
+                <button type="submit" form="checkout-form" class="btn btn-checkout w-100 mt-4">
+                    Place Order Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

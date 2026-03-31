@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% block title %}ShopKart - India's Best Online Store{% endblock %}
+{% block content %}
+
+{% if not search and not category %}
+<!-- Hero Banner -->
+<div class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="hero-tag">New Season Arrivals</span>
+            <h1 class="hero-title">Shop the<br><span class="hero-highlight">Best Deals</span></h1>
+            <p class="hero-sub">Discover millions of products from top brands at unbeatable prices</p>
+            <div class="hero-btns">
+                <a href="#products" class="btn-hero-primary">Shop Now <i class="fas fa-arrow-right ms-2"></i></a>
+                <a href="{{ url_for('signup') }}" class="btn-hero-secondary">Become a Seller</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-card-float card1">📱<br><small>Electronics</small></div>
+            <div class="hero-card-float card2">👗<br><small>Fashion</small></div>
+            <div class="hero-card-float card3">📚<br><small>Books</small></div>
+            <div class="hero-blob"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+    <div class="container-fluid px-4">
+        <div class="row text-center g-0">
+            <div class="col-3 stat-item"><div class="stat-num">2M+</div><div class="stat-label">Products</div></div>
+            <div class="col-3 stat-item"><div class="stat-num">10M+</div><div class="stat-label">Customers</div></div>
+            <div class="col-3 stat-item"><div class="stat-num">50K+</div><div class="stat-label">Sellers</div></div>
+            <div class="col-3 stat-item"><div class="stat-num">4.8★</div><div class="stat-label">Avg Rating</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured / Top Rated -->
+<section class="section-pad">
+    <div class="container-fluid px-4">
+        <div class="section-header">
+            <h2 class="section-title">⭐ Top Rated Products</h2>
+            <a href="{{ url_for('index', sort='rating') }}" class="section-link">View All <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="row g-3">
+            {% for p in featured %}
+            <div class="col-6 col-md-3">
+                {% include '_product_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Promo Banners -->
+<div class="container-fluid px-4 mb-4">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="promo-banner promo-blue">
+                <div>
+                    <div class="promo-label">Up to 40% off</div>
+                    <div class="promo-title">Electronics Sale</div>
+                    <a href="{{ url_for('index', category='Electronics') }}" class="promo-btn">Shop Now</a>
+                </div>
+                <div class="promo-icon">📱</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="promo-banner promo-orange">
+                <div>
+                    <div class="promo-label">New Arrivals</div>
+                    <div class="promo-title">Fashion Week</div>
+                    <a href="{{ url_for('index', category='Clothing') }}" class="promo-btn">Shop Now</a>
+                </div>
+                <div class="promo-icon">👗</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- All Products -->
+<section id="products" class="section-pad">
+    <div class="container-fluid px-4">
+        <div class="row g-4">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-2 col-md-3">
+                <div class="filter-sidebar">
+                    <h5 class="filter-title"><i class="fas fa-filter me-2"></i>Filters</h5>
+                    <form method="get" action="{{ url_for('index') }}" id="filter-form">
+                        <input type="hidden" name="q" value="{{ search }}">
+
+                        <div class="filter-group">
+                            <div class="filter-group-title">Category</div>
+                            {% for cat in categories %}
+                            <div class="form-check filter-check">
+                                <input class="form-check-input" type="radio" name="category" value="{{ cat.category }}"
+                                       id="cat_{{ loop.index }}" {% if category == cat.category %}checked{% endif %}
+                                       onchange="document.getElementById('filter-form').submit()">
+                                <label class="form-check-label" for="cat_{{ loop.index }}">{{ cat.category }}</label>
+                            </div>
+                            {% endfor %}
+                            {% if category %}
+                            <a href="{{ url_for('index', q=search) }}" class="clear-filter">Clear ✕</a>
+                            {% endif %}
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="filter-group-title">Price Range</div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="number" name="min_price" class="form-control form-control-sm filter-input" placeholder="Min" value="{{ min_price }}">
+                                <span>—</span>
+                                <input type="number" name="max_price" class="form-control form-control-sm filter-input" placeholder="Max" value="{{ max_price }}">
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <div class="filter-group-title">Sort By</div>
+                            <select name="sort" class="form-select form-select-sm filter-select" onchange="this.form.submit()">
+                                <option value="">Relevance</option>
+                                <option value="price_asc" {% if sort=='price_asc' %}selected{% endif %}>Price: Low to High</option>
+                                <option value="price_desc" {% if sort=='price_desc' %}selected{% endif %}>Price: High to Low</option>
+                                <option value="rating" {% if sort=='rating' %}selected{% endif %}>Top Rated</option>
+                                <option value="newest" {% if sort=='newest' %}selected{% endif %}>Newest First</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-apply-filter w-100">Apply Filters</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="col-lg-10 col-md-9">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="section-title mb-0">
+                        {% if search %}Results for "<em>{{ search }}</em>"{% elif category %}{{ category }}{% else %}All Products{% endif %}
+                        <span class="product-count">({{ products|length }})</span>
+                    </h5>
+                </div>
+
+                {% if products %}
+                <div class="row g-3">
+                    {% for p in products %}
+                    <div class="col-6 col-md-4 col-lg-3">
+                        {% include '_product_card.html' %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if total_pages > 1 %}
+                <nav aria-label="Page navigation" class="mt-5">
+                    <ul class="pagination justify-content-center sk-pagination">
+                        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                            <a class="page-link" href="{{ url_for('index', page=page-1, q=search, category=category, min_price=min_price, max_price=max_price, sort=sort) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        
+                        {% set start = [1, page - 2]|max %}
+                        {% set end = [total_pages, page + 2]|min %}
+                        
+                        {% if start > 1 %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('index', page=1, q=search, category=category, min_price=min_price, max_price=max_price, sort=sort) }}">1</a></li>
+                        {% if start > 2 %}<li class="page-item disabled"><span class="page-link">...</span></li>{% endif %}
+                        {% endif %}
+
+                        {% for p_num in range(start, end + 1) %}
+                        <li class="page-item {% if p_num == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('index', page=p_num, q=search, category=category, min_price=min_price, max_price=max_price, sort=sort) }}">{{ p_num }}</a>
+                        </li>
+                        {% endfor %}
+
+                        {% if end < total_pages %}
+                        {% if end < total_pages - 1 %}<li class="page-item disabled"><span class="page-link">...</span></li>{% endif %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('index', page=total_pages, q=search, category=category, min_price=min_price, max_price=max_price, sort=sort) }}">{{ total_pages }}</a></li>
+                        {% endif %}
+
+                        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                            <a class="page-link" href="{{ url_for('index', page=page+1, q=search, category=category, min_price=min_price, max_price=max_price, sort=sort) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
+
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <h4>No products found</h4>
+                    <p>Try different keywords or browse all categories</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary-sk">Browse All Products</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Toast notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="cartToast" class="toast sk-toast" role="alert">
+        <div class="toast-body">
+            <i class="fas fa-check-circle me-2 text-success"></i>
+            <span id="toastMsg">Added to cart!</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

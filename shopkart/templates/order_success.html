@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Order Placed Successfully - ShopKart{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="py-5">
+        <div class="display-1 text-success mb-4">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1 class="fw-bold">Thank You!</h1>
+        <p class="lead mb-4">Your order has been placed successfully. You will receive a confirmation message soon.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('index') }}" class="btn btn-primary-sk px-4 py-2">Continue Shopping</a>
+            <a href="{{ url_for('orders') }}" class="btn btn-outline-secondary px-4 py-2">View My Orders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
